@@ -15,7 +15,6 @@ def default_parameters():
         K0=1         # Initial capital
     )
 
-
 # Cobb-Douglas production function (1):
 def production(K, A, L, alpha):
     return K**alpha * (A * L)**(1-alpha)
@@ -85,6 +84,6 @@ def plot(gdp_constant, gdp_varying, wages_constant, wages_varying, interest_cons
         plt.ylabel('Values')
         plt.legend()
         plt.grid(True)
-
+    
     plt.tight_layout()
     plt.show()
