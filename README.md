@@ -1,9 +1,7 @@
-# \[Group name\]
+# \[tb527\]
 
 **Group members:**
-- A
-- B
-- C
+- tbm527
 
 This repository contains  
 1. Inaugural project. 
