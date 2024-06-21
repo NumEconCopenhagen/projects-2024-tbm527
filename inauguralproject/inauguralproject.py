@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+import numpy as np
 from scipy import optimize
 from scipy.optimize import minimize
 
@@ -58,23 +59,20 @@ class InauguralProjectClass:
         eps2 = x2A - self.par.w2A + x2B - self.par.w2B
 
         return eps1, eps2
+    
+### Question 4:
 
-# For Question 4:
 # We define the function that calculates consumer A's utility influenced by consumer B's demands
-def objective_function(p1, model):
-    # We calculate demands for consumer B at this p1
+def objective_function_q(p1, model):
+    # Calculate demands for consumer B at this p1
     x1B, x2B = model.demand_B(p1)
     
-    # We calculate new endowments for consumer A based on B's demands
-    x1A_new = 1 - x1B
-    x2A_new = 1 - x2B
+    # Calculate utility for A given these new endowments
+    utility_A = model.utility_A(1 - x1B, 1 - x2B)
     
-    # We check for invalid values
-    if x1A_new <= 0 or x2A_new <= 0:
-        return np.inf
+    # Check for invalid values
+    if 1 - x1B <= 0 or 1 - x2B <= 0:
+        return np.inf  # Return a large number to indicate invalid utility
     
-    # We calculate utility for A given these new endowments
-    utility_A = model.utility_A(x1A_new, x2A_new)
-    
-    # Since we are using a minimizer, we return the negative utility to maximize it
+    # Since we are using a minimizer, return the negative utility to maximize it
     return -utility_A
