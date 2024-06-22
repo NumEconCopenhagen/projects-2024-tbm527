@@ -16,4 +16,3 @@ This project particularly explores two scenarios involving changes in the employ
 To run this project, the following Python libraries are needed:
 - `numpy`: For numerical operations.
 - `matplotlib.pyplot`: For plotting graphs.
-- `types.SimpleNamespace`: For organizing model parameters easily.
