@@ -13,39 +13,35 @@ par.epsilon = 2.0
 par.tau = 0.0
 par.T = 0.0
 par.kappa = 0.1
-w = 1  # Numeraire
+w = 1  # The wage is set as numeraire
 
-# Function to calculate optimal labor and output
 def optimal_labor_output(w, p, A, gamma):
     optimal_labor = (p * A * gamma / w)**(1 / (1 - gamma))
     optimal_output = A * optimal_labor**gamma
     return optimal_labor, optimal_output
 
-# Function to calculate consumer's optimal labor supply
 def consumer_optimal_labor(par, w, p1, p2):
     l1, y1 = optimal_labor_output(w, p1, par.A, par.gamma)
     l2, y2 = optimal_labor_output(w, p2, par.A, par.gamma)
-    
+
     def utility_function(l):
         c1 = par.alpha * (w * l + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / p1
         c2 = (1 - par.alpha) * (w * l + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / (p2 + par.tau)
         return - (np.log(c1**par.alpha * c2**(1 - par.alpha)) - par.nu * l**(1 + par.epsilon) / (1 + par.epsilon))
-    
+
     result = minimize(utility_function, x0=1, bounds=[(0, None)])
     return result.x[0]
 
-# Function to calculate market clearing conditions
 def market_clearing(p1, p2, par, w):
     l1, y1 = optimal_labor_output(w, p1, par.A, par.gamma)
     l2, y2 = optimal_labor_output(w, p2, par.A, par.gamma)
-    
+
     l_star = consumer_optimal_labor(par, w, p1, p2)
     c1_star = par.alpha * (w * l_star + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / p1
     c2_star = (1 - par.alpha) * (w * l_star + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / (p2 + par.tau)
-    
-    return l1 + l2 - l_star, c1_star - y1, c2_star - y2  # Labor market, good market 1, good market 2
 
-# Check market clearing conditions
+    return l1 + l2 - l_star, c1_star - y1, c2_star - y2
+
 def check_market_clearing(par, w):
     p1_values = np.linspace(0.1, 2.0, 10)
     p2_values = np.linspace(0.1, 2.0, 10)
@@ -58,6 +54,7 @@ def check_market_clearing(par, w):
 
     df = pd.DataFrame(results, columns=['p1', 'p2', 'Labor Market', 'Good 1 Market', 'Good 2 Market'])
     return df
+
 
 # Function to solve for equilibrium prices
 def equilibrium_prices(par, w):
