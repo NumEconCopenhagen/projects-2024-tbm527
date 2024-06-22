@@ -59,11 +59,12 @@ class InauguralProjectClass:
         eps2 = x2A - self.par.w2A + x2B - self.par.w2B
 
         return eps1, eps2
+
     
 ### Question 4:
 
 # We define the function that calculates consumer A's utility influenced by consumer B's demands
-def objective_function_q(p1, model):
+def objective_function_q4(p1, model):
     # Calculate demands for consumer B at this p1
     x1B, x2B = model.demand_B(p1)
     
