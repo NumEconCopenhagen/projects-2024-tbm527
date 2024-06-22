@@ -29,6 +29,3 @@ Each project folder includes:
 - Python scripts (`.py` files) for model definitions and functions.
 - Jupyter notebooks (`.ipynb` files) for executing the models and visualizations.
 - Data files as needed for the specific project.
-
-## Getting Started
-To run the projects, ensure you have the required Python libraries installed. Each project folder contains a `requirements.txt` file listing the necessary dependencies.
