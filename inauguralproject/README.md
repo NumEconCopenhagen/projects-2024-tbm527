@@ -1,9 +1,17 @@
-# Inaugural project
+# Inaugural Project
 
-Welcome to our Inaugural project! 
+## Overview
+The inaugural project aims to teach you to solve a simple economic model and present the results.
 
-This project explores different scenarios of a consumer optimisation problem in an exchange economy with 2 consumers.
+## Files
+- `inauguralproject.py`: Contains the definitions of the economic model, utilizing Python classes and functions to simulate different economic scenarios.
+- `InauguralProject.ipynb`: A Jupyter notebook that imports the definitions from `inauguralproject.py`, executes the model, and provides visualizations to demonstrate the impact of parameter changes on the economy.
 
-The **results** of the project can be seen from running [inauguralproject.ipynb](inauguralproject.ipynb).
+## Model Description
+This project explores an exchange economy with two consumers (A and B) and two goods (x1 and x2). The initial endowments and utility functions for consumers are given, and the project involves solving for market equilibrium and visualizing the results.
 
-**Dependencies:** Apart from a standard Anaconda Python 3 installation, the project requires no further packages.
+## Requirements
+To run this project, the following Python libraries are needed:
+- `numpy`: For numerical operations.
+- `matplotlib.pyplot`: For plotting graphs.
+- `scipy`: For optimization routines.
