@@ -16,7 +16,7 @@ This problem involves approximating the value of a function at given points usin
 
 ## Files
 - `exam1.py`: Contains the definitions of the economic models and functions for the exam tasks.
-- `exam_2024.ipynb`: A Jupyter notebook that imports the definitions from `examproject.py`, executes the models, and provides visualizations and analyses for the exam tasks.
+- `exam_2024.ipynb`: A Jupyter notebook that imports the definitions from `exam1.py`, executes the models, and provides visualizations and analyses for the exam tasks.
 
 ## Requirements
 To run this project, the following non-standard Python libraries are needed:
