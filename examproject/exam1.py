@@ -67,27 +67,26 @@ def equilibrium_prices(par, w):
     p_equilibrium = fsolve(equations, p_initial_guess)
     return p_equilibrium
 
-# Social welfare function
-def social_welfare(params, par, w):
-    tau = params[0]
+# Social Welfare Function
+def social_welfare(par, w, tau, T):
     par.tau = tau
-    p1_eq, p2_eq = equilibrium_prices(par, w)
-    l1, y1 = optimal_labor_output(w, p1_eq, par.A, par.gamma)
-    l2, y2 = optimal_labor_output(w, p2_eq, par.A, par.gamma)
+    par.T = T
+    p1, p2 = equilibrium_prices(par, w)
+    l1, y1 = optimal_labor_output(w, p1, par.A, par.gamma)
+    l2, y2 = optimal_labor_output(w, p2, par.A, par.gamma)
     
-    # Calculate utility U
-    l_star = consumer_optimal_labor(par, w, p1_eq, p2_eq)
-    c1_star = par.alpha * (w * l_star + par.tau * c2_star + p1_eq * y1 - w * l1 + p2_eq * y2 - w * l2) / p1_eq
-    c2_star = (1 - par.alpha) * (w * l_star + par.tau * c2_star + p1_eq * y1 - w * l1 + p2_eq * y2 - w * l2) / (p2_eq + tau)
+    l_star = consumer_optimal_labor(par, w, p1, p2)
+    c1_star = par.alpha * (w * l_star + T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / p1
+    c2_star = (1 - par.alpha) * (w * l_star + T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / (p2 + tau)
     
-    U = np.log(c1_star**par.alpha * c2_star**(1 - par.alpha)) - par.nu * l_star**(1 + par.epsilon) / (1 + par.epsilon)
-    SWF = U - par.kappa * y2  # Social welfare function
-    return -SWF  # Minimize negative SWF to maximize SWF
+    utility = np.log(c1_star**par.alpha * c2_star**(1 - par.alpha)) - par.nu * l_star**(1 + par.epsilon) / (1 + par.epsilon)
+    swf = utility - par.kappa * y2
+    
+    return -swf  # We minimize the negative social welfare to maximize it
 
-# Optimize social welfare function
+# Optimize Social Welfare
 def optimize_social_welfare(par, w):
-    params_initial_guess = [0]
-    result = minimize(social_welfare, params_initial_guess, args=(par, w), bounds=[(0, None)])
-    optimal_tau = result.x[0]
-    optimal_T = optimal_tau * consumer_optimal_labor(par, w, *equilibrium_prices(par, w))
+    result = minimize(lambda x: social_welfare(par, w, x[0], x[1]), [0, 0], bounds=[(0, None), (0, None)])
+    optimal_tau, optimal_T = result.x
     return optimal_tau, optimal_T
+
