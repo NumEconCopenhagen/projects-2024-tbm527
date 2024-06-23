@@ -61,7 +61,6 @@ def check_market_clearing(par, w):
     df = pd.DataFrame(results, columns=['p1', 'p2', 'Labor Market', 'Good 1 Market', 'Good 2 Market'])
     return df
 
-
 # I create a function to solve for equilibrium prices
 def equilibrium_prices(par, w):
     def equations(p):
