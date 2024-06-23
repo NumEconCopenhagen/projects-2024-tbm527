@@ -4,7 +4,7 @@ from scipy.optimize import fsolve, minimize
 import pandas as pd
 
 ### Problem 1 ###
-# Parameters
+# I set the parameters
 par = SimpleNamespace()
 par.A = 1.0
 par.gamma = 0.5
@@ -16,15 +16,18 @@ par.T = 0.0
 par.kappa = 0.1
 w = 1  # The wage is set as numeraire
 
+# I create a function for the firms' optimal labor and output
 def optimal_labor_output(w, p, A, gamma):
     optimal_labor = (p * A * gamma / w)**(1 / (1 - gamma))
     optimal_output = A * optimal_labor**gamma
     return optimal_labor, optimal_output
 
+# I create a function for the consumers' optimal labor output
 def consumer_optimal_labor(par, w, p1, p2):
     l1, y1 = optimal_labor_output(w, p1, par.A, par.gamma)
     l2, y2 = optimal_labor_output(w, p2, par.A, par.gamma)
 
+    # Utility function
     def utility_function(l):
         c1 = par.alpha * (w * l + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / p1
         c2 = (1 - par.alpha) * (w * l + par.T + p1 * y1 - w * l1 + p2 * y2 - w * l2) / (p2 + par.tau)
@@ -33,6 +36,7 @@ def consumer_optimal_labor(par, w, p1, p2):
     result = minimize(utility_function, x0=1, bounds=[(0, None)])
     return result.x[0]
 
+# I create a market clearing function
 def market_clearing(p1, p2, par, w):
     l1, y1 = optimal_labor_output(w, p1, par.A, par.gamma)
     l2, y2 = optimal_labor_output(w, p2, par.A, par.gamma)
@@ -43,6 +47,7 @@ def market_clearing(p1, p2, par, w):
 
     return l1 + l2 - l_star, c1_star - y1, c2_star - y2
 
+# I create a function that checks for market clearing and return it as a DataFrame
 def check_market_clearing(par, w):
     p1_values = np.linspace(0.1, 2.0, 10)
     p2_values = np.linspace(0.1, 2.0, 10)
@@ -57,7 +62,7 @@ def check_market_clearing(par, w):
     return df
 
 
-# Function to solve for equilibrium prices
+# I create a function to solve for equilibrium prices
 def equilibrium_prices(par, w):
     def equations(p):
         p1, p2 = p
@@ -68,7 +73,7 @@ def equilibrium_prices(par, w):
     p_equilibrium = fsolve(equations, p_initial_guess)
     return p_equilibrium
 
-# Social Welfare Function
+# I create a social welfare function
 def social_welfare(par, w, tau, T):
     par.tau = tau
     par.T = T
@@ -85,7 +90,7 @@ def social_welfare(par, w, tau, T):
     
     return -swf  # We minimize the negative social welfare to maximize it
 
-# Optimize Social Welfare
+# I optimize the social welfare
 def optimize_social_welfare(par, w):
     result = minimize(lambda x: social_welfare(par, w, x[0], x[1]), [0, 0], bounds=[(0, None), (0, None)])
     optimal_tau, optimal_T = result.x
