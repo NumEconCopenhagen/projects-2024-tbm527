@@ -14,7 +14,7 @@ The purpose of this project is to apply data cleaning, data structuring methods,
 This project uses a Python-based economic model to analyze the impact of various parameters on key economic indicators like GDP per capita, real wages, real interest rates, and the percentage deviation in GDP per capita.
 
 ### Exam Project
-The exam project includes solving complex economic models, data analysis, and presenting the findings. The exam focuses on three main problems:
+The exam focuses on three main problems:
 1. **Production economy and CO2 taxation**
 2. **Career choice model**
 3. **Barycentric interpolation**
