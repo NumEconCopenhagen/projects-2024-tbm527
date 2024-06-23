@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from scipy.optimize import fsolve, minimize
 import pandas as pd
 
+### Problem 1 ###
 # Parameters
 par = SimpleNamespace()
 par.A = 1.0
@@ -90,3 +91,83 @@ def optimize_social_welfare(par, w):
     optimal_tau, optimal_T = result.x
     return optimal_tau, optimal_T
 
+### Problem 3 ###
+# Question 3.1
+# I create a function to generate random points and the corresponding function values
+def generate_random_points(seed=2024, size=50):
+    rng = np.random.default_rng(seed)
+    X = rng.uniform(size=(size, 2))
+    return X, np.array([x[0] * x[1] for x in X])
+
+# I find points A, B, C, D
+def find_points(X, y):
+    try:
+        A = min([p for p in X if p[0] > y[0] and p[1] > y[1]], key=lambda p: np.linalg.norm(p - y))
+    except ValueError:
+        A = None
+
+    try:
+        B = min([p for p in X if p[0] > y[0] and p[1] < y[1]], key=lambda p: np.linalg.norm(p - y))
+    except ValueError:
+        B = None
+
+    try:
+        C = min([p for p in X if p[0] < y[0] and p[1] < y[1]], key=lambda p: np.linalg.norm(p - y))
+    except ValueError:
+        C = None
+
+    try:
+        D = min([p for p in X if p[0] < y[0] and p[1] > y[1]], key=lambda p: np.linalg.norm(p - y))
+    except ValueError:
+        D = None
+
+    return A, B, C, D
+
+# Question 3.2
+# I create a Barycentric coordinates calculation
+def barycentric_coordinates(A, B, C, P):
+    denom = (B[1] - C[1]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[1] - C[1])
+    r1 = ((B[1] - C[1]) * (P[0] - C[0]) + (C[0] - B[0]) * (P[1] - C[1])) / denom
+    r2 = ((C[1] - A[1]) * (P[0] - C[0]) + (A[0] - C[0]) * (P[1] - C[1])) / denom
+    r3 = 1 - r1 - r2
+    return r1, r2, r3
+
+# Question 3.3
+# I create a function to perform the full algorithm for a single point
+def interpolate_f_for_y(y, X, F):
+    A, B, C, D = find_points(X, y)
+
+    if A is None or B is None or C is None or D is None:
+        return np.nan
+
+    if not np.isnan(A).any() and not np.isnan(B).any() and not np.isnan(C).any():
+        r_ABC = barycentric_coordinates(A, B, C, y)
+    else:
+        r_ABC = (np.nan, np.nan, np.nan)
+
+    if not np.isnan(C).any() and not np.isnan(D).any() and not np.isnan(A).any():
+        r_CDA = barycentric_coordinates(C, D, A, y)
+    else:
+        r_CDA = (np.nan, np.nan, np.nan)
+
+    inside_ABC = all(0 <= r <= 1 for r in r_ABC)
+    inside_CDA = all(0 <= r <= 1 for r in r_CDA)
+
+    if inside_ABC:
+        approx_f_y = r_ABC[0] * F[np.where((X == A).all(axis=1))[0][0]] + \
+                     r_ABC[1] * F[np.where((X == B).all(axis=1))[0][0]] + \
+                     r_ABC[2] * F[np.where((X == C).all(axis=1))[0][0]]
+    elif inside_CDA:
+        approx_f_y = r_CDA[0] * F[np.where((X == C).all(axis=1))[0][0]] + \
+                     r_CDA[1] * F[np.where((X == D).all(axis=1))[0][0]] + \
+                     r_CDA[2] * F[np.where((X == A).all(axis=1))[0][0]]
+    else:
+        approx_f_y = np.nan
+
+    return approx_f_y
+
+# Question 3.4
+# I create the main function to process all points in Y
+def process_points(Y, X, F):
+    results = [(y, interpolate_f_for_y(y, X, F), y[0] * y[1]) for y in Y]
+    return results
